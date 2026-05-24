@@ -1,0 +1,73 @@
+import pygame
+import sys
+import math
+import time
+import random
+
+pygame.init()
+
+width = 800
+height = 600
+size = (width, height)
+
+screen = pygame.display.set_mode(size)
+
+frame = pygame.time.Clock()
+
+class Enemy(pygame.sprite.Sprite):
+	def __init__(self):
+		super().__init__()
+		self.image = pygame.Surface((30,30))
+		self.image.fill((100,150,100))
+		self.rect = self.image.get_rect()
+		self.rect.center = [400,100]
+		self.speed = 5
+
+	def update(self):
+		self.rect.x += self.speed
+		if self.rect.x >= width-30:
+			self.speed = -5
+			self.rect.x -= 5
+		if self.rect.x <= 0:
+			self.speed = +5
+			self.rect.x += 5
+
+enemy = Enemy()
+
+class Bullet(pygame.sprite.Sprite):
+	def __init__(self):
+		super().__init__()
+		self.image = pygame.Surface((5,5))
+		self.image.fill((100,50,50))
+		self.rect = self.image.get_rect()
+		self.speed = 5
+	def update(self):
+
+		self.rect.y += self.speed
+		
+		
+
+bullet = Bullet()
+
+all_sprite = pygame.sprite.Group()
+all_sprite.add(enemy)
+
+enemy_sprite = pygame.sprite.Group()
+enemy_sprite.add(enemy)
+
+while True:
+	screen.fill((255,255,255))
+
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			sys.exit()
+
+	for entity in all_sprite:
+		screen.blit(entity.image, entity.rect)
+
+
+	all_sprite.add(bullet)
+	all_sprite.update()
+
+	pygame.display.update()
+	frame.tick(60)
